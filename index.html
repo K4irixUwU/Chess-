@@ -1,45 +1,86 @@
-<!-- SHIROKURO ELITE WELCOME CARD -->
-<div style="max-width:340px;margin:30px auto;padding:22px;border-radius:26px;
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Shirokuro Newest Shadows</title>
+</head>
+
+<body style="
+margin:0;
+padding:0;
+background:transparent;
+font-family:Arial, sans-serif;
+">
+
+<div id="card" style="
+width:360px;
+margin:0px;
+padding:24px;
+border-radius:25px;
 background:
-radial-gradient(circle at 20% 0%,rgba(255,255,255,.06),transparent 40%),
-radial-gradient(circle at 100% 100%,rgba(255,255,255,.04),transparent 50%),
-linear-gradient(180deg,#1c1c21,#0c0c0f 80%);
+radial-gradient(circle at 20% 0%, rgba(255,255,255,.05), transparent 40%),
+radial-gradient(circle at 100% 100%, rgba(255,255,255,.04), transparent 50%),
+linear-gradient(180deg,#1a1a1f,#0a0a0d 80%);
 box-shadow:
-0 30px 60px rgba(0,0,0,.95),
+0 30px 70px rgba(0,0,0,.95),
 inset 0 0 60px rgba(255,255,255,.03);
-font-family:Arial,sans-serif;
-color:#f2f2f2;
+color:#f5f5f5;
 position:relative;
-overflow:hidden;">
+overflow:hidden;
+">
 
-<!-- Animated Shine -->
-<div style="position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.05),transparent 60%);
-transform:rotate(25deg);
-animation:shine 6s linear infinite;"></div>
+<!-- Ambient Glow -->
+<div style="
+position:absolute;
+top:-40%;
+left:-40%;
+width:180%;
+height:180%;
+background:radial-gradient(circle, rgba(255,255,255,.06), transparent 60%);
+animation:ambient 8s ease-in-out infinite alternate;
+pointer-events:none;
+"></div>
 
-<!-- TITLE -->
-<div style="text-align:center;font-size:22px;font-weight:900;letter-spacing:3px;
-text-shadow:0 0 25px rgba(255,255,255,.4);
-font-family:'Times New Roman',serif;">
+<!-- Title -->
+<div style="
+text-align:center;
+font-size:22px;
+font-weight:900;
+letter-spacing:3px;
+text-shadow:0 0 25px rgba(255,255,255,.35);
+font-family:'Times New Roman', serif;
+">
 NEWEST SHADOWS
 </div>
 
-<div style="text-align:center;font-size:11px;opacity:.55;
-letter-spacing:2px;margin-bottom:20px;">
+<div style="
+text-align:center;
+font-size:11px;
+opacity:.55;
+letter-spacing:2px;
+margin-bottom:22px;
+">
 ENTER THE ARENA
 </div>
 
-<!-- MEMBERS -->
-<div id="skMembers">Summoning...</div>
+<!-- Members -->
+<div id="members" style="min-height:120px;">Loading...</div>
 
-<!-- FOOTER -->
-<div style="text-align:center;font-size:10px;opacity:.35;margin-top:18px;letter-spacing:2px;">
+<!-- Footer -->
+<div style="
+text-align:center;
+font-size:10px;
+opacity:.35;
+margin-top:18px;
+letter-spacing:2px;
+">
 THE ART OF BLACK AND WHITE
 </div>
+
 </div>
 
 <script>
+
 function timeAgo(timestamp){
   const seconds = Math.floor((Date.now()/1000) - timestamp);
   const intervals = [
@@ -58,87 +99,121 @@ function timeAgo(timestamp){
   return "just joined";
 }
 
-async function loadShiroMembers(){
-  const r = await fetch("https://api.chess.com/pub/club/shirokuro/members");
-  const d = await r.json();
+async function loadMembers(){
 
-  const members = [...d.weekly,...d.monthly];
-  members.sort((a,b)=> b.joined - a.joined);
-  const top5 = members.slice(0,5);
+  const container = document.getElementById("members");
+  container.innerHTML = "Summoning...";
 
-  const box = document.getElementById("skMembers");
-  box.innerHTML = "";
+  try{
+    const res = await fetch("https://api.chess.com/pub/club/shirokuro/members");
+    const data = await res.json();
 
-  for(let i=0;i<top5.length;i++){
-    const m = top5[i];
-    const pr = await fetch("https://api.chess.com/pub/player/"+m.username);
-    const pj = await pr.json();
+    const members = [...data.weekly, ...data.monthly];
+    members.sort((a,b)=> b.joined - a.joined);
+    const top5 = members.slice(0,5);
 
-    const avatar = pj.avatar || "https://taki2023.github.io/taki/default-pawn.png";
-    const rapid = pj.chess_rapid?.last?.rating || "—";
+    container.innerHTML = "";
 
-    const row = document.createElement("div");
+    const profiles = await Promise.all(
+      top5.map(m => 
+        fetch("https://api.chess.com/pub/player/" + m.username)
+        .then(r => r.json())
+      )
+    );
 
-    row.style.cssText = `
-      display:flex;
-      align-items:center;
-      gap:14px;
-      padding:14px;
-      border-radius:20px;
-      background:rgba(255,255,255,.07);
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-      box-shadow:
-        inset 0 0 25px rgba(255,255,255,.05),
-        0 10px 30px rgba(0,0,0,.9);
-      margin-bottom:14px;
-      transition:.35s ease;
-      cursor:pointer;
-    `;
+    top5.forEach((m, i) => {
 
-    row.onmouseover = () => {
-      row.style.transform="translateY(-4px) scale(1.03)";
-      row.style.boxShadow="inset 0 0 25px rgba(255,255,255,.08),0 15px 35px rgba(0,0,0,.95),0 0 20px rgba(255,255,255,.15)";
-    };
+      const pj = profiles[i];
+      const avatar = pj.avatar || "https://images.chesscomfiles.com/uploads/v1/images_users/tiny_mce/default-pawn.png";
+      const rapid = pj.chess_rapid?.last?.rating || "—";
 
-    row.onmouseout = () => {
-      row.style.transform="translateY(0) scale(1)";
-      row.style.boxShadow="inset 0 0 25px rgba(255,255,255,.05),0 10px 30px rgba(0,0,0,.9)";
-    };
+      const row = document.createElement("div");
 
-    row.innerHTML = `
-      <a href="https://www.chess.com/member/${m.username}" 
-         target="_blank"
-         style="display:flex;align-items:center;gap:14px;
-         text-decoration:none;color:inherit;width:100%;">
+      row.style.cssText = `
+        display:flex;
+        align-items:center;
+        gap:14px;
+        padding:14px;
+        border-radius:22px;
+        background:rgba(255,255,255,.06);
+        backdrop-filter:blur(18px);
+        box-shadow:
+          inset 0 0 25px rgba(255,255,255,.05),
+          0 15px 35px rgba(0,0,0,.9);
+        margin-bottom:14px;
+        opacity:0;
+        transform:translateY(15px);
+        transition:.4s ease;
+        cursor:pointer;
+      `;
 
-        <img src="${avatar}" 
-             style="width:50px;height:50px;border-radius:50%;
-             box-shadow:0 0 18px rgba(255,255,255,.3);
-             transition:.3s;">
+      setTimeout(()=>{
+        row.style.opacity="1";
+        row.style.transform="translateY(0)";
+      }, i*120);
 
-        <div style="flex:1;">
-          <div style="font-weight:800;font-size:15px;letter-spacing:1px;">
-            @${m.username}
+      row.onmouseover = () => {
+        row.style.transform="translateY(-5px) scale(1.03)";
+        row.style.boxShadow="inset 0 0 25px rgba(255,255,255,.08),0 20px 45px rgba(0,0,0,.95)";
+      };
+
+      row.onmouseout = () => {
+        row.style.transform="translateY(0) scale(1)";
+        row.style.boxShadow="inset 0 0 25px rgba(255,255,255,.05),0 15px 35px rgba(0,0,0,.9)";
+      };
+
+      row.innerHTML = `
+        <a href="https://www.chess.com/member/${m.username}" 
+           target="_blank"
+           style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;width:100%;">
+
+          <img src="${avatar}" 
+               style="
+               width:52px;
+               height:52px;
+               border-radius:50%;
+               box-shadow:0 0 18px rgba(255,255,255,.25);
+               ">
+
+          <div style="flex:1;">
+            <div style="
+              font-weight:800;
+              font-size:15px;
+              letter-spacing:1px;
+            ">
+              @${m.username}
+            </div>
+
+            <div style="
+              font-size:11px;
+              opacity:.6;
+              letter-spacing:1px;
+            ">
+              Rapid ${rapid} · Joined ${timeAgo(m.joined)}
+            </div>
           </div>
-          <div style="font-size:11px;opacity:.6;letter-spacing:1px;">
-            Rapid ${rapid} · Joined ${timeAgo(m.joined)}
-          </div>
-        </div>
-      </a>
-    `;
+        </a>
+      `;
 
-    box.appendChild(row);
+      container.appendChild(row);
+    });
+
+  }catch(e){
+    container.innerHTML = "Failed to summon shadows.";
   }
 }
 
-loadShiroMembers();
-setInterval(loadShiroMembers,300000);
+loadMembers();
+setInterval(loadMembers, 300000);
+
 </script>
 
 <style>
-@keyframes shine{
-  0%{transform:translateX(-100%) rotate(25deg);}
-  100%{transform:translateX(100%) rotate(25deg);}
+@keyframes ambient{
+  from { transform: translateY(0px); opacity:.5; }
+  to   { transform: translateY(40px); opacity:.8; }
 }
 </style>
+
+</body>
+</html>
