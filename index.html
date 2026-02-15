@@ -5,16 +5,12 @@
 <title>Shirokuro Newest Shadows</title>
 </head>
 
-<body style="
-margin:0;
-padding:0;
-background:transparent;
-font-family:Arial, sans-serif;
-">
+<body style="margin:0;padding:0;background:transparent;">
+
 
 <div id="card" style="
 width:360px;
-margin:0px;
+margin:0 auto;
 padding:24px;
 border-radius:25px;
 background:
@@ -214,6 +210,16 @@ setInterval(loadMembers, 300000);
   to   { transform: translateY(40px); opacity:.8; }
 }
 </style>
+<script>
+function sendHeight(){
+  const height = document.documentElement.scrollHeight;
+  parent.postMessage(height, "*");
+}
+
+window.onload = sendHeight;
+window.onresize = sendHeight;
+</script>
 
 </body>
 </html>
+
