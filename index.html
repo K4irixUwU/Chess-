@@ -4,40 +4,39 @@
 <meta charset="UTF-8">
 <title>Newest Shadows</title>
 </head>
+
 <body style="
 margin:0;
-padding:0;
+padding:30px 0;
 background:url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1200') center/cover no-repeat fixed;
 font-family:'Times New Roman', Times, serif;
 display:flex;
 justify-content:center;
-align-items:center;
-height:100vh;
 ">
 
 <div style="
-width:270px;
-background:linear-gradient(145deg,#0d0f16,#1a1f2b);
-border-radius:28px;
-padding:22px 18px;
-box-shadow:0 20px 50px rgba(0,0,0,0.8);
+width:250px;
+background:linear-gradient(145deg,#0c0f16,#1a1f2b);
+border-radius:30px;
+padding:20px 16px;
+box-shadow:0 25px 60px rgba(0,0,0,0.85);
 color:white;
 ">
 
-<div style="text-align:center;margin-bottom:18px;">
+<div style="text-align:center;margin-bottom:16px;">
 <div style="
-font-size:16px;
+font-size:15px;
 letter-spacing:3px;
 font-weight:bold;
 ">
-NEWEST<br>SHADOWS
+NEWEST SHADOWS
 </div>
 
 <div style="
-font-size:8px;
+font-size:7px;
 letter-spacing:2px;
 opacity:0.7;
-margin-top:4px;
+margin-top:3px;
 ">
 ENTER THE ARENA
 </div>
@@ -47,8 +46,8 @@ ENTER THE ARENA
 
 <div style="
 text-align:center;
-margin-top:16px;
-font-size:8px;
+margin-top:14px;
+font-size:7px;
 letter-spacing:2px;
 opacity:0.6;
 ">
@@ -59,9 +58,9 @@ THE ART OF BLACK AND WHITE
 
 <script>
 const players = [
-{user:"@shanayaaa18", time:"Joined 4 minutes ago", img:"https://i.imgur.com/4YQZ4tP.jpg"},
+{user:"@shanayaaa18", time:"Joined 7 minutes ago", img:"https://i.imgur.com/4YQZ4tP.jpg"},
 {user:"@ariel-lover", time:"Joined 1 day ago", img:"https://i.imgur.com/6VBx3io.jpg"},
-{user:"@xxcatastrophicx", time:"Joined 1 day ago", img:"https://i.imgur.com/oYiTqum.jpg"},
+{user:"@xxcatastrophicxx", time:"Joined 1 day ago", img:"https://i.imgur.com/oYiTqum.jpg"},
 {user:"@mimelo21", time:"Joined 2 days ago", img:"https://i.imgur.com/8Km9tLL.jpg"},
 {user:"@siberianmayhem", time:"Joined 2 days ago", img:"https://i.imgur.com/1Xq9BiS.jpg"}
 ];
@@ -69,24 +68,25 @@ const players = [
 const container = document.getElementById("players");
 
 players.forEach(p => {
+
 let card = document.createElement("div");
 card.style = `
-background:linear-gradient(90deg,#202532,#11141c);
-border-radius:20px;
-padding:10px;
+background:linear-gradient(90deg,#1c212c,#11141c);
+border-radius:18px;
+padding:9px;
 display:flex;
 align-items:center;
-margin-bottom:12px;
-box-shadow:0 6px 18px rgba(0,0,0,0.5);
+margin-bottom:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.6);
 `;
 
 let avatar = document.createElement("img");
 avatar.src = p.img;
 avatar.style = `
-width:40px;
-height:40px;
+width:36px;
+height:36px;
 border-radius:50%;
-margin-right:10px;
+margin-right:9px;
 object-fit:cover;
 `;
 
@@ -95,14 +95,14 @@ let info = document.createElement("div");
 let username = document.createElement("div");
 username.innerText = p.user;
 username.style = `
-font-size:12px;
+font-size:11px;
 font-weight:bold;
 `;
 
 let details = document.createElement("div");
 details.innerText = "Rapid — " + p.time;
 details.style = `
-font-size:8px;
+font-size:7px;
 opacity:0.7;
 margin-top:2px;
 `;
@@ -114,6 +114,7 @@ card.appendChild(avatar);
 card.appendChild(info);
 
 container.appendChild(card);
+
 });
 </script>
 
