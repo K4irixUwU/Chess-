@@ -11,12 +11,12 @@
     --serif:Georgia,'Times New Roman',serif; --sans:Arial,Helvetica,sans-serif;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:transparent}
-  body{display:flex;justify-content:center;padding:6px;font-family:var(--sans);color:var(--ash)}
+  html,body{margin:0;padding:0;background:#050405;min-height:100%}
+  body{display:flex;justify-content:center;font-family:var(--sans);color:var(--ash)}
   .card{
-    width:100%;max-width:360px;background:var(--ink);
-    border:1px solid rgba(196,40,58,.28);border-radius:4px;
-    box-shadow:0 24px 60px rgba(0,0,0,.9);overflow:hidden;position:relative;
+    width:100%;max-width:360px;min-height:100vh;background:var(--ink);
+    border:1px solid rgba(196,40,58,.28);border-radius:0;
+    overflow:hidden;position:relative;
   }
   .card::before{
     content:"";position:absolute;inset:0 0 auto 0;height:140px;pointer-events:none;
@@ -45,8 +45,18 @@
   .who{flex:1;min-width:0}
   .name{font-family:var(--serif);font-size:16px;color:#f3ede8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .meta{margin-top:3px;font-size:11px;color:var(--dim);letter-spacing:.3px}
-  .tag{flex:none;font-size:10px;letter-spacing:1px;color:#fff;background:var(--red);padding:3px 7px;border-radius:2px}
+  .av{position:relative;flex:none}
+  .dot{position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);border:2px solid var(--ink)}
   .foot{position:relative;text-align:center;font-family:var(--serif);font-style:italic;font-size:12px;color:var(--dim);padding:18px 0 20px}
+  @media (max-width:300px){
+    .head{padding:18px 14px 0;gap:9px}
+    .sub{padding:6px 14px 12px}
+    #members{padding:0 14px}
+    .rule{display:none}
+    .kanji{font-size:24px}.title{font-size:19px}
+    .avatar{width:40px;height:40px}
+    .row{gap:11px}.name{font-size:15px}
+  }
   @media (prefers-reduced-motion:reduce){.row{transition:none;opacity:1;transform:none}}
 </style>
 </head>
@@ -71,10 +81,10 @@ let firstLoad = true;
 
 function timeAgo(ts){
   const s = Math.floor(Date.now()/1000 - ts);
-  const units = [["year",31536000],["month",2592000],["day",86400],["hour",3600],["minute",60]];
+  const units = [["y",31536000],["mo",2592000],["d",86400],["h",3600],["m",60]];
   for (const [label, secs] of units){
     const n = Math.floor(s / secs);
-    if (n >= 1) return n + " " + label + (n > 1 ? "s" : "") + " ago";
+    if (n >= 1) return n + label + " ago";
   }
   return "just now";
 }
@@ -99,17 +109,20 @@ function makeRow(m, profile, index){
   name.textContent = "@" + m.username;
   const meta = document.createElement("div");
   meta.className = "meta";
-  const rapid = profile && profile.chess_rapid && profile.chess_rapid.last ? profile.chess_rapid.last.rating : "unrated";
-  meta.textContent = "Rapid " + rapid + " · Joined " + timeAgo(m.joined);
+  const rapid = profile && profile.chess_rapid && profile.chess_rapid.last ? profile.chess_rapid.last.rating : null;
+  meta.textContent = (rapid ? "Rapid " + rapid + " · " : "") + "joined " + timeAgo(m.joined);
   who.append(name, meta);
 
-  a.append(img, who);
+  const av = document.createElement("div");
+  av.className = "av";
+  av.append(img);
   if (index === 0){
-    const tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent = "NEW";
-    a.append(tag);
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.title = "Newest member";
+    av.append(dot);
   }
+  a.append(av, who);
   setTimeout(() => a.classList.add("in"), index * 90);
   return a;
 }
